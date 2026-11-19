@@ -1,0 +1,105 @@
+version: '3.8'
+
+# ==============================================================================
+# OISM - Omnichannel Inventory & Sales Management System (SQL Server 2022)
+# Docker Compose Orchestration File
+# ==============================================================================
+
+services:
+  # ----------------------------------------------------------------------------
+  # 1. DATABASE ENGINE: Microsoft SQL Server 2022 (Compatibility Level 160)
+  # ----------------------------------------------------------------------------
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: oism-sqlserver-2022
+    hostname: sqlserver
+    user: root
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Oism2026@StrongPassword!
+      - MSSQL_PID=Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Oism2026@StrongPassword!' -C -Q 'SELECT 1' || /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'Oism2026@StrongPassword!' -C -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    networks:
+      - oism-network
+    restart: unless-stopped
+
+  # ----------------------------------------------------------------------------
+  # 2. AUTO-INIT SEEDER: Tu dong nap Schema, RLS, Indexes, Stored Procedures
+  # ----------------------------------------------------------------------------
+  db-init:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: oism-db-init
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    environment:
+      - DB_HOST=sqlserver
+      - MSSQL_SA_PASSWORD=Oism2026@StrongPassword!
+    volumes:
+      - ./SQLQuery1.sql:/scripts/SQLQuery1.sql:ro
+      - ./OISM_User_Accounts.sql:/scripts/OISM_User_Accounts.sql:ro
+      - ./OISM_Spatial_GPS_Demo.sql:/scripts/OISM_Spatial_GPS_Demo.sql:ro
+      - ./scripts/init-db.sh:/scripts/init-db.sh:ro
+    entrypoint: ["/bin/bash", "/scripts/init-db.sh"]
+    networks:
+      - oism-network
+    restart: "no"
+
+  # ----------------------------------------------------------------------------
+  # 3. BACKEND API: ASP.NET Core 8.0 Web API (Minimal API + Dapper)
+  # ----------------------------------------------------------------------------
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: oism-backend-api
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+      db-init:
+        condition: service_completed_successfully
+    ports:
+      - "5000:5000"
+    environment:
+      - ASPNETCORE_URLS=http://+:5000
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=OISM;User Id=sa;Password=Oism2026@StrongPassword!;TrustServerCertificate=True;
+    networks:
+      - oism-network
+    restart: unless-stopped
+
+  # ----------------------------------------------------------------------------
+  # 4. FRONTEND WEB: PWA POS & Omnichannel Dashboard (Nginx Reverse Proxy)
+  # ----------------------------------------------------------------------------
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: oism-frontend-web
+    depends_on:
+      - backend
+    ports:
+      - "8080:80"
+    networks:
+      - oism-network
+    restart: unless-stopped
+
+# ------------------------------------------------------------------------------
+# VOLUMES & NETWORKS
+# ------------------------------------------------------------------------------
+volumes:
+  mssql_data:
+    driver: local
+
+networks:
+  oism-network:
+    driver: bridge

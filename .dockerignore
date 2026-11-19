@@ -1,0 +1,13 @@
+**/.git
+**/.gitignore
+**/.vs
+**/.vscode
+**/bin
+**/obj
+**/*.bak
+**/*.tmp
+**/logs
+**/.system_generated
+.env
+BAO_CAO_CAC_YEU_CAU_CON_THIEU_OISM.docx
+BAO_CAO_CAC_YEU_CAU_CON_THIEU_OISM.md
