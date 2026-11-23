@@ -202,7 +202,7 @@ Toàn bộ môi trường SQL Server 2022, Seeder CSDL, Backend .NET 8 và Web P
 
 ### Cách 2: Khởi Chạy Trực Tiếp Qua SSMS 2022 & Backend Cục Bộ
 Dành cho quá trình làm việc, debug truy vấn trực tiếp trên Microsoft SQL Server Management Studio:
-1. Mở **SSMS 2022**, mở tệp **`SQLQuery1.sql`** và nhấn **F5 (Execute)** để khởi tạo Database `OISM`, các bảng, trigger, thủ tục và nạp đầy đủ dữ liệu mẫu.
+1. Mở **SSMS 2022**, mở tệp **`database/SQLQuery1.sql`** và nhấn **F5 (Execute)** để khởi tạo Database `OISM`, các bảng, trigger, thủ tục và nạp đầy đủ dữ liệu mẫu.
 2. Nhấp đúp vào tệp **`start.bat`**, chọn **[1]** để khởi động Backend API .NET 8 và tự động mở Web App.
 3. Mọi thao tác tạo đơn, xuất nhập kho, chuyển kho trên Web sẽ được ghi nhận trực tiếp vào SSMS theo thời gian thực!
 
@@ -210,7 +210,7 @@ Dành cho quá trình làm việc, debug truy vấn trực tiếp trên Microsof
 
 ### Cách 3: Chạy Độc Lập Giả Lập In-Memory (Trực tiếp trên Trình duyệt)
 Dành cho trường hợp máy tính chấm thi không có sẵn Docker hay SQL Server:
-- Nhấp đúp mở trực tiếp tệp **`index.html`** bằng trình duyệt bất kỳ (Chrome, Edge, Firefox).
+- Nhấp đúp mở trực tiếp tệp **`frontend/index.html`** bằng trình duyệt bất kỳ (Chrome, Edge, Firefox).
 - Hệ thống tự động kích hoạt **In-Memory Mock Engine** tích hợp sẵn đầy đủ dữ liệu mẫu, cho phép demo mượt mà 100% tính năng POS, bản đồ GPS và mô phỏng Webhook.
 
 ---
@@ -297,27 +297,36 @@ Dự án thiết lập luồng tích hợp và triển khai liên tục tự đ�
 H-QTCSDL/
 ├── .github/
 │   └── workflows/
-│       └── ci-cd.yml                # Quy trình kiểm thử CI/CD tự động trên GitHub
-├── backend/
+│       └── ci-cd.yml                # Quy trình kiểm thử CI/CD tự động trên GitHub Actions
+├── backend/                         # Backend Web API (ASP.NET Core 8.0 Minimal API + Dapper)
 │   ├── Properties/
 │   │   └── launchSettings.json
 │   ├── appsettings.json             # Chuỗi kết nối SQL Server 2022
-│   ├── backend.csproj               # Cấu hình dự án ASP.NET Core 8.0 & Dapper
-│   ├── Dockerfile                   # Build container Backend Web API
-│   └── Program.cs                   # Toàn bộ mã nguồn REST API & Multi-Tenant Context
+│   ├── backend.csproj               # Cấu hình dự án C# & NuGet dependencies
+│   ├── Dockerfile                   # Dockerfile đóng gói Backend API
+│   └── Program.cs                   # Mã nguồn REST API & RLS Tenant Session Context
+├── database/                        # Toàn bộ kịch bản Cơ sở dữ liệu SQL Server 2022
+│   ├── SQLQuery1.sql                # Master Database Script (DDL, RLS, Triggers, Procs, Seed)
+│   ├── OISM_Spatial_GPS_Demo.sql    # Kịch bản demo dữ liệu không gian Spatial GIS (SRID 4326)
+│   ├── OISM_User_Accounts.sql       # Kịch bản quản lý tài khoản & mã hóa BCrypt
+│   └── SQLFile1.sql                 # Kịch bản truy vấn mẫu kiểm thử RLS Context
+├── docs/                            # Hồ sơ & Tài liệu kỹ thuật đồ án
+│   ├── BAO_CAO_CAC_YEU_CAU_CON_THIEU_OISM.md   # Báo cáo đối soát yêu cầu đề cương
+│   └── BAO_CAO_CAC_YEU_CAU_CON_THIEU_OISM.docx # Phiên bản Word chính thức
+├── frontend/                        # Giao diện Web POS & Dashboard đa kênh
+│   ├── index.html                   # Single-Page Web App (Dual-mode In-Memory & Live API)
+│   ├── nginx.conf                   # Cấu hình Reverse Proxy Nginx
+│   ├── Dockerfile                   # Dockerfile đóng gói Frontend Web Server
+│   └── success.mp3                  # Hiệu ứng âm thanh thông báo
 ├── scripts/
 │   └── init-db.sh                   # Script tự động khởi tạo CSDL trong Docker
-├── SQLQuery1.sql                    # Kịch bản CSDL SQL Server 2022 Master (DDL, RLS, Triggers, Procs, Seed)
-├── OISM_Spatial_GPS_Demo.sql        # Script nâng cao dữ liệu không gian Spatial GIS
-├── OISM_User_Accounts.sql           # Script quản lý tài khoản & mã băm BCrypt
-├── docker-compose.yml               # File điều phối Docker (MSSQL, Seeder, API, Nginx)
+├── docker-compose.yml               # File điều phối Docker (MSSQL 2022, Seeder, API, Frontend)
 ├── docker-start.bat                 # 1-Click khởi động toàn bộ hệ thống bằng Docker
 ├── start.bat                        # Khởi động Backend .NET cục bộ kết nối SSMS
 ├── push_to_github.bat               # Script đồng bộ & đẩy toàn bộ mã nguồn lên GitHub
-├── index.html                       # Giao diện Web POS & Dashboard đa năng
-├── nginx.conf                       # Cấu hình Reverse Proxy Nginx cho Frontend
-├── Dockerfile.frontend              # Dockerfile đóng gói giao diện Web với Nginx
-└── README.md                        # Tài liệu hướng dẫn kỹ thuật chi tiết
+├── .dockerignore                    # Danh sách loại trừ khi build Docker
+├── .gitignore                       # Danh sách loại trừ của Git
+└── README.md                        # Báo cáo và tài liệu hướng dẫn kỹ thuật chi tiết
 ```
 
 ---

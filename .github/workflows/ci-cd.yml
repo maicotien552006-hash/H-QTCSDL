@@ -49,15 +49,15 @@ jobs:
 
       - name: 🚀 Execute SQLQuery1.sql (Schema, Partition, RLS, Indexes, Procedures)
         run: |
-          sqlcmd -S 127.0.0.1 -U sa -P 'Oism2026@StrongPassword!' -C -i SQLQuery1.sql
+          sqlcmd -S 127.0.0.1 -U sa -P 'Oism2026@StrongPassword!' -C -i database/SQLQuery1.sql
 
       - name: 👥 Execute OISM_User_Accounts.sql
         run: |
-          sqlcmd -S 127.0.0.1 -U sa -P 'Oism2026@StrongPassword!' -C -i OISM_User_Accounts.sql
+          sqlcmd -S 127.0.0.1 -U sa -P 'Oism2026@StrongPassword!' -C -i database/OISM_User_Accounts.sql
 
       - name: 🗺️ Execute OISM_Spatial_GPS_Demo.sql
         run: |
-          sqlcmd -S 127.0.0.1 -U sa -P 'Oism2026@StrongPassword!' -C -i OISM_Spatial_GPS_Demo.sql
+          sqlcmd -S 127.0.0.1 -U sa -P 'Oism2026@StrongPassword!' -C -i database/OISM_Spatial_GPS_Demo.sql
 
       - name: 🧪 Run Automated Verification Queries (8 Advanced Features)
         run: |
