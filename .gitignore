@@ -1,0 +1,32 @@
+# Build and Compilation outputs
+**/bin/
+**/obj/
+**/out/
+**/dist/
+
+# Visual Studio & IDE files
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# System & Backup files
+*.bak
+*.tmp
+*.log
+Thumbs.db
+Desktop.ini
+
+# Environment variables & secrets
+.env
+.env.local
+appsettings.Production.json
+
+# Docker data volume
+mssql-data/
+data/
+
+# OS-specific files
+.DS_Store
