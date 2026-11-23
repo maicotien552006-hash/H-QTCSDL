@@ -22,13 +22,13 @@ if "%opt%"=="1" (
     start "OISM Backend .NET API" cmd /k "cd /d %~dp0backend && dotnet run --urls=http://localhost:5000"
     timeout /t 3 /nobreak >nul
     echo Dang mo Web App tren trinh duyet...
-    start "" "%~dp0frontend\index.html"
+    start "" "%~dp0index.html"
     echo.
     echo Backend da san sang! Moi thao tac tren Web se ghi thang vao SSMS 2022.
 ) else (
     echo.
     echo Dang mo Web App o che do mo phong doc lap...
-    start "" "%~dp0frontend\index.html"
+    start "" "%~dp0index.html"
 )
 
 echo.

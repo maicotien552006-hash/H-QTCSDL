@@ -1,341 +1,320 @@
-# OISM - Omnichannel Inventory and Sales Management System
-### Hệ Thống Quản Lý Bán Hàng & Tồn Kho Đa Kênh
+<div align="center">
 
-[![SQL Server 2022](https://img.shields.io/badge/Database-SQL_Server_2022_Level_160-CC292B?style=for-the-badge&logo=microsoft-sql-server&logoColor=white)](https://www.microsoft.com/sql-server)
-[![.NET 8](https://img.shields.io/badge/Backend-.NET_8.0_Minimal_API-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
-[![Docker Compose](https://img.shields.io/badge/Container-Docker_Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
-[![GitHub Actions CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white)](https://github.com/maicotien552006-hash/H-QTCSDL/actions)
-[![Spatial GIS](https://img.shields.io/badge/GIS-Spatial_SRID_4326-107C41?style=for-the-badge&logo=leaflet&logoColor=white)](https://leafletjs.com/)
-[![License MIT](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
+# 🛒 OISM - OMNICHANNEL INVENTORY & SALES MANAGEMENT SYSTEM
+### Hệ Thống Quản Lý Bán Hàng & Tồn Kho Đa Kênh Chuẩn Enterprise
 
-> **Đồ Án Môn Học:** Hệ Quản Trị Cơ Sở Dữ Liệu (H-QTCSDL)  
-> **Repository GitHub:** [https://github.com/maicotien552006-hash/H-QTCSDL](https://github.com/maicotien552006-hash/H-QTCSDL)  
-> **Kiến trúc cốt lõi:** Microsoft SQL Server 2022 Enterprise (Compatibility Level 160) + ASP.NET Core 8.0 Web API (Dapper) + Single-Page Web App (Tailwind CSS, Leaflet GIS) + Docker Compose + GitHub Actions CI/CD.
+[![SQL Server 2022](https://img.shields.io/badge/SQL%20Server%202022-v16.0%20(Compat%20160)-CC292B?style=for-the-badge&logo=microsoftsqlserver&logoColor=white)](https://www.microsoft.com/sql-server)
+[![.NET 8.0](https://img.shields.io/badge/.NET-8.0%20Minimal%20API-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
+[![Docker](https://img.shields.io/badge/Docker-Compose%20Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+[![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/maicotien552006-hash/H-QTCSDL/actions)
+[![Architecture](https://img.shields.io/badge/Architecture-Multi--Tenant%20%7C%20ACID-success?style=for-the-badge)](#-2-kiến-trúc-hệ-thống)
 
----
+<p align="center">
+  <b>Đồ Án Môn Học:</b> Hệ Quản Trị Cơ Sở Dữ Liệu (H-QTCSDL)<br/>
+  <b>Kho lưu trữ:</b> <a href="https://github.com/maicotien552006-hash/H-QTCSDL">github.com/maicotien552006-hash/H-QTCSDL</a>
+</p>
 
-## 📑 MỤC LỤC
-1. [Giới Thiệu Đề Tài & Bài Toán Nghiệp Vụ](#-giới-thiệu-đề-tài--bài-toán-nghiệp-vụ)
-2. [Kiến Trúc Tổng Thể Hệ Thống](#-kiến-trúc-tổng-thể-hệ-thống)
-3. [Thiết Kế Cấu Trúc Dữ Liệu & Mô Hình CSDL](#-thiết-kế-cấu-trúc-dữ-liệu--mô-hình-csdl)
-   - [Sơ Đồ Quan Hệ Thực Thể (ERD)](#sơ-đồ-quan-hệ-thực-thể-erd)
-   - [Đặc Tả Chi Tiết 14 Bảng Thực Thể](#đặc-tả-chi-tiết-14-bảng-thực-thể)
-   - [Quy Trình Chuyển Kho 2 Bước (In-Transit Stock Transfer)](#quy-trình-chuyển-kho-2-bước-in-transit-stock-transfer)
-4. [10 Kỹ Thuật CSDL SQL Server 2022 Đột Phá](#-10-kỹ-thuật-csdl-sql-server-2022-đột-phá)
-5. [Hướng Dẫn Khởi Chạy Ứng Dụng (3 Cách)](#-hướng-dẫn-khởi-chạy-ứng-dụng-3-cách)
-6. [Tài Khoản Đăng Nhập Mẫu & Phân Quyền (RBAC)](#-tài-khoản-đăng-nhập-mẫu--phân-quyền-rbac)
-7. [Danh Mục REST API & Webhook TMĐT](#-danh-mục-rest-api--webhook-tmđt)
-8. [Quy Trình Kiểm Thử Tự Động & CI/CD](#-quy-trình-kiểm-thử-tự-động--cicd)
-9. [Kịch Bản Trình Diễn Khi Bảo Vệ Đồ Án](#-kịch-bản-trình-diễn-khi-bảo-vệ-đồ-án)
-10. [Cấu Trúc Thư Mục Dự Án](#-cấu-trúc-thư-mục-dự-án)
+[✨ Giới Thiệu](#-1-tổng-quan-dự-án) •
+[🏛️ Kiến Trúc](#-2-kiến-trúc-hệ-thống) •
+[💎 8 Kỹ Thuật CSDL Cốt Lõi](#-3-bảng-8-kỹ-thuật-csdl-sql-server-2022-nâng-cao) •
+[🗺️ Mô Hình Dữ Liệu](#-4-mô-hình-thực-thể-erd--cơ-sở-dữ-liệu) •
+[🚀 Hướng Dẫn Khởi Chạy](#-5-hướng-dẫn-cài-đặt--khởi-chạy) •
+[🔑 Tài Khoản Demo](#-6-ma-trận-tài-khoản--phân-quyền-rbac) •
+[🎯 Kịch Bản Bảo Vệ](#-7-kịch-bản-5-bước-trình-diễn-chấm-thi) •
+[📡 API Reference](#-8-danh-mục-api-endpoints) •
+[🛠️ Khắc Phục Sự Cố](#-9-khắc-phục-sự-cố-thường-gặp)
 
 ---
 
-## 🎯 GIỚI THIỆU ĐỀ TÀI & BÀI TOÁN NGHIỆP VỤ
+</div>
 
-Trong bối cảnh bùng nổ thương mại điện tử, các doanh nghiệp bán lẻ phải vận hành đồng thời trên nhiều kênh: **Quầy bán lẻ (POS)**, **Shopee**, **TikTok Shop**, **Lazada** và **Website/Admin**. Sự phức tạp trong quản lý kênh dẫn tới các thách thức kỹ thuật lớn:
-- **Bán vượt quá tồn kho (Overselling):** Khi nhiều kênh cùng đặt 1 SKU vào thời điểm Flash Sale.
-- **Xung đột & Deadlock đọc-ghi:** Thu ngân thanh toán quầy và thủ kho nhập hàng/kiểm kê cạnh tranh tài nguyên CSDL.
-- **Bảo mật đa khách thuê (Multi-Tenancy):** Rò rỉ dữ liệu giữa các doanh nghiệp khi dùng chung một Database.
-- **Kiểm toán bất biến (Audit Trail):** Ngăn chặn việc nhân viên tự ý sửa/xóa số liệu hàng tồn kho.
-- **Giá vốn biến động:** Xác định chính xác giá vốn thực tế (COGS) theo phương pháp bình quân gia quyền.
+## 📖 1. Tổng Quan Dự Án
 
-**Hệ thống OISM (Omnichannel Inventory and Sales Management System)** được thiết kế chuyên biệt để giải quyết trọn vẹn các thách thức trên bằng cách tối ưu hóa triệt để năng lực của **Microsoft SQL Server 2022**.
+**OISM** là giải pháp phần mềm quản trị bán lẻ và tồn kho đa kênh thời gian thực (Omnichannel), kết nối đồng bộ giữa các quầy thu ngân vật lý (POS) với các sàn thương mại điện tử hàng đầu (Shopee, TikTok Shop, Lazada).
+
+Hệ thống được xây dựng tập trung làm nổi bật **sức mạnh của Hệ Quản Trị CSDL Microsoft SQL Server 2022** trong việc giải quyết các bài toán kỹ thuật phức tạp:
+- ⚡ **Chống bán âm (Anti-oversell) khi Flash Sale:** Kiểm soát tương tranh bi quan (`UPDLOCK`, `ROWLOCK`) và xử lý giao dịch ACID nguyên tử.
+- 🔒 **Cô lập dữ liệu Đa người thuê (Multi-Tenancy):** Bảo vệ dữ liệu bằng Row-Level Security (RLS) ngay tại nhân CSDL mà không phụ thuộc tầng ứng dụng.
+- 📜 **Sổ cái kho bất biến (Append-Only Ledger):** Ngăn chặn gian lận, truy vết 100% lịch sử biến động kho theo nguyên tắc kế toán kép.
+- 📊 **Xử lý phân tích dữ liệu lớn (Real-Time Analytics):** Nonclustered Columnstore Index và Phân vùng bảng (Partitioning) tăng tốc độ báo cáo gấp hàng chục lần.
 
 ---
 
-## 🏗️ KIẾN TRÚC TỔNG THỂ HỆ THỐNG
+## 🏛️ 2. Kiến Trúc Hệ Thống
 
-```text
-┌────────────────────────────────────────────────────────────────────────┐
-│               PRESENTATION LAYER (Frontend Web Client)                 │
-│  - Giao diện bán hàng POS Fast Checkout (Cảm ứng, Phím tắt F2-F9)       │
-│  - Trung tâm Đơn hàng Đa kênh: Shopee, TikTok Shop, Lazada             │
-│  - Bản đồ GIS số hóa mạng lưới 11 chi nhánh & Định vị GPS (Leaflet)   │
-│  - Chế độ In-Memory an toàn: Hoạt động ngay cả khi không có kết nối DB│
-└───────────────────────────────────┬────────────────────────────────────┘
-                                    │ (HTTP REST API / JSON Payload)
-                                    ▼
-┌────────────────────────────────────────────────────────────────────────┐
-│             APPLICATION & BUSINESS LOGIC (.NET 8 Minimal API)          │
-│  - Xác thực JWT & Phân quyền RBAC (Owner, Staff, Cashier)              │
-│  - Multi-Tenant Middleware: Inject SESSION_CONTEXT(N'TenantId')        │
-│  - Background Service: Quét hủy đơn giữ quá hạn định kỳ                │
-│  - Truy cập dữ liệu hiệu năng cao qua Dapper Micro-ORM                │
-└───────────────────────────────────┬────────────────────────────────────┘
-                                    │ (T-SQL Commands, TVP & Stored Procedures)
-                                    ▼
-┌────────────────────────────────────────────────────────────────────────┐
-│           ENTERPRISE DATABASE ENGINE (SQL Server 2022 - CL 160)        │
-│  1. RCSI Snapshot: Triệt tiêu hiện tượng khóa chặn đọc-ghi             │
-│  2. Row-Level Security (RLS): Cô lập dữ liệu Tenant ở mức CSDL         │
-│  3. Temporal Tables (System-Versioned): Lịch sử biến động giá niêm yết│
-│  4. Spatial GIS Data: Hệ tọa độ WGS84 (SRID 4326), STDistance()        │
-│  5. Table Partitioning: Phân vùng Sổ cái kho theo tháng                │
-│  6. Append-Only Trigger: Chặn sửa/xóa, bảo toàn tính bất biến Sổ cái   │
-│  7. WAC Trigger: Tự động tính giá vốn bình quân gia quyền khi nhập     │
-│  8. Nonclustered Columnstore Index: Tăng tốc báo cáo doanh thu gấp 10x │
-│  9. State Machine Trigger: Ép buộc luồng trạng thái đơn hàng nghiêm ngặt│
-│ 10. Two-Step Stock Transfer: Chuyển kho an toàn In-Transit 2 bước      │
-└────────────────────────────────────────────────────────────────────────┘
+```
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                                 TẦNG TRÌNH DIỄN                                  │
+│  Single-Page Application (HTML5, Tailwind CSS, Heroicons, Leaflet GIS, Audio FX) │
+│  - Màn hình Bán hàng POS Fast-Checkout (Phím tắt F1-F12, Quét Barcode EAN-13)   │
+│  - Mô phỏng Webhook sàn TMĐT (Shopee/TikTok Flash Sale Concurrency 50 threads)   │
+│  - Bản đồ GPS tương tác trực quan định vị Chi nhánh & Kho hàng WGS84             │
+└────────────────────────────────────────┬─────────────────────────────────────────┘
+                                         │  (HTTP / JSON RESTful API)
+                                         ▼
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                                 TẦNG NGHIỆP VỤ                                   │
+│            Backend ASP.NET Core 8.0 Web API (High-Performance Minimal API)       │
+│  - Xác thực & Phân quyền: JWT Authentication + Role-Based Access Control (RBAC)  │
+│  - Ngữ cảnh phiên: sp_set_session_context @TenantId kích hoạt bộ lọc bảo mật RLS│
+│  - Truy cập dữ liệu: Micro-ORM Dapper tối ưu hóa I/O, giảm thiểu overhead EF    │
+│  - Nền tảng tự động: Background Worker quét & hoàn trả tồn kho giữ quá hạn       │
+└────────────────────────────────────────┬─────────────────────────────────────────┘
+                                         │  (T-SQL Procedures, Triggers, Views)
+                                         ▼
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                             TẦNG CƠ SỞ DỮ LIỆU                                   │
+│              Microsoft SQL Server 2022 Enterprise (Compat Level 160)             │
+│  ┌───────────────────────┬─────────────────────────┬──────────────────────────┐  │
+│  │ RCSI Isolation        │ Row-Level Security(RLS) │ Temporal System-Versioned│  │
+│  ├───────────────────────┼─────────────────────────┼──────────────────────────┤  │
+│  │ Spatial GIS (SRID4326)│ Columnstore Index (NCCI)│ Table Partitioning       │  │
+│  ├───────────────────────┴─────────────────────────┴──────────────────────────┤  │
+│  │ Triggers nghiệp vụ: Immutable Ledger (Append-Only) & Giá vốn bình quân WAC │  │
+│  └────────────────────────────────────────────────────────────────────────────┘  │
+└──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 🗄️ THIẾT KẾ CẤU TRÚC DỮ LIỆU & MÔ HÌNH CSDL
+## 💎 3. Bảng 8 Kỹ Thuật CSDL SQL Server 2022 Nâng Cao
 
-### Sơ Đồ Quan Hệ Thực Thể (ERD)
+Hệ thống hiện thực hóa trọn vẹn 8 chuyên đề trọng tâm của môn học **Hệ Quản Trị CSDL**:
 
-```mermaid
-erDiagram
-    Tenants ||--o{ Users : "có người dùng"
-    Tenants ||--o{ Branches : "sở hữu chi nhánh"
-    Tenants ||--o{ Categories : "quản lý danh mục"
-    Tenants ||--o{ Brands : "quản lý thương hiệu"
-    Tenants ||--o{ Products : "sở hữu sản phẩm"
-    Tenants ||--o{ GeoPins : "lưu điểm ghim"
-    
-    Categories ||--o{ Products : "phân loại"
-    Brands ||--o{ Products : "sản xuất"
-    Products ||--o{ SKUs : "gồm các biến thể"
-    
-    SKUs ||--|| ListedPrices : "định giá niêm yết"
-    ListedPrices ||--o{ ListedPricesHistory : "lưu lịch sử (Temporal)"
-    
-    Branches ||--o{ StockLevels : "lưu trữ tồn kho"
-    SKUs ||--o{ StockLevels : "có mức tồn"
-    
-    Branches ||--o{ InventoryLedger : "ghi nhận biến động"
-    SKUs ||--o{ InventoryLedger : "chi tiết hàng"
-    
-    Branches ||--o{ PurchaseReceipts : "nhập hàng tại"
-    PurchaseReceipts ||--o{ PurchaseReceiptItems : "chi tiết dòng nhập"
-    SKUs ||--o{ PurchaseReceiptItems : "thuộc về"
-    
-    Branches ||--o{ Orders : "xử lý đơn hàng"
-    Orders ||--o{ OrderItems : "gồm các sản phẩm"
-    SKUs ||--o{ OrderItems : "bán sản phẩm"
-    
-    Branches ||--o{ StockTransfers : "kho xuất"
-    Branches ||--o{ StockTransfers : "kho nhập"
-    SKUs ||--o{ StockTransfers : "chuyển hàng SKU"
-    
-    Tenants ||--o{ WebhookEvents : "nhận webhook sàn"
+| # | Kỹ Thuật SQL Server 2022 | Đối Tượng / Cú Pháp Minh Họa | Cơ Chế Hoạt Động & Nghiệp Vụ Trong OISM |
+| :-: | :--- | :--- | :--- |
+| **1** | **RCSI (Read Committed Snapshot)** | `ALTER DATABASE OISM SET READ_COMMITTED_SNAPSHOT ON` | Sử dụng hàng phiên bản (Row Versioning) trong `tempdb`. Người đọc (Thu ngân tra tồn kho) không chặn người ghi (Thủ kho nhập hàng) và ngược lại $\rightarrow$ **Xóa bỏ hoàn toàn hiện tượng Deadlock** lúc cao điểm. |
+| **2** | **Row-Level Security (RLS)** | `sec.fn_TenantSecurityPredicate`<br>`sec.TenantIsolationPolicy` | Hàm vị từ bảo mật kiểm tra `SESSION_CONTEXT(N'TenantId')`. Ngăn chặn triệt để rò rỉ dữ liệu giữa các chuỗi cửa hàng ngay tại tầng Database Engine mà không cần mệnh đề `WHERE TenantId = @id` ở backend. |
+| **3** | **Temporal Tables (System-Versioned)** | `dbo.ListedPrices`<br>`dbo.ListedPricesHistory` | Tự động ghi lại dòng thời gian hiệu lực (`ValidFrom`, `ValidTo`) theo chuẩn ISO-8601. Cho phép truy vấn lại chính xác bảng giá tại bất kỳ thời điểm nào trong quá khứ (`FOR SYSTEM_TIME AS OF ...`). |
+| **4** | **Spatial GIS (SRID 4326)** | `dbo.Branches.Location` (`geography`)<br>`Location.STDistance(@ClientLoc)` | Lưu trữ vị trí kinh độ/vĩ độ (Ellipsoid WGS84). Tính toán khoảng cách địa lý theo đơn vị mét (Great-Circle Distance) để tự động chọn chi nhánh tối ưu giao hàng. |
+| **5** | **Nonclustered Columnstore Index (NCCI)** | `NCCI_OrderItems_Analytics`<br>trên `dbo.OrderItems` | Nén dữ liệu theo từng cột với tỷ lệ nén 5x-10x. Tăng tốc độ tính toán tổng doanh thu, lợi nhuận gộp và sản lượng bán gấp 10-100 lần so với B-Tree truyền thống. |
+| **6** | **Table Partitioning (Phân Vùng Bảng)** | `pf_Ledger_Monthly` (Function)<br>`ps_Ledger_Monthly` (Scheme) | Tách vật lý dữ liệu bảng `dbo.InventoryLedger` thành các phân vùng độc lập theo từng tháng giao dịch. Giúp việc bảo trì, lưu trữ và rà soát sổ cái lịch sử đạt hiệu năng tối đa. |
+| **7** | **Append-Only Ledger Trigger** | `trg_InventoryLedger_AppendOnly`<br>trên `dbo.InventoryLedger` | Chặn đứng 100% mọi thao tác `UPDATE` và `DELETE`. Nếu có sửa chữa tồn kho, nhân viên bắt buộc phải tạo bút toán điều chỉnh mới (`Type='ADJUST'`), đảm bảo tính toàn vẹn kế toán. |
+| **8** | **Weighted Average Cost (WAC) Trigger** | `trg_PurchaseReceiptItems_WeightedAvgCost`<br>trên `dbo.PurchaseReceiptItems` | Tự động tính toán lại giá vốn bình quân gia quyền của SKU ngay khi phiếu nhập kho được chốt: `NewCost = (OldQty * OldCost + InQty * InCost) / (OldQty + InQty)`. |
+
+<details>
+<summary><b>🔍 Nhấp vào đây để xem chi tiết mã T-SQL của các kỹ thuật trên</b></summary>
+
+```sql
+-- 1. Kích hoạt RCSI
+ALTER DATABASE OISM SET READ_COMMITTED_SNAPSHOT ON WITH ROLLBACK IMMEDIATE;
+
+-- 2. Hàm vị từ RLS
+CREATE FUNCTION sec.fn_TenantSecurityPredicate(@TenantId INT)
+RETURNS TABLE WITH SCHEMABINDING AS
+RETURN SELECT 1 AS fn_result
+WHERE @TenantId = CAST(SESSION_CONTEXT(N'TenantId') AS INT);
+
+-- 3. Bảng Temporal theo dõi biến động giá
+CREATE TABLE dbo.ListedPrices (
+    PriceId INT IDENTITY PRIMARY KEY,
+    TenantId INT NOT NULL,
+    SKUId INT NOT NULL,
+    RetailPrice DECIMAL(18,2) NOT NULL,
+    WholesalePrice DECIMAL(18,2) NOT NULL,
+    ValidFrom DATETIME2 GENERATED ALWAYS AS ROW START NOT NULL,
+    ValidTo DATETIME2 GENERATED ALWAYS AS ROW END NOT NULL,
+    PERIOD FOR SYSTEM_TIME (ValidFrom, ValidTo)
+) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = dbo.ListedPricesHistory));
+
+-- 4. Nonclustered Columnstore Index
+CREATE NONCLUSTERED COLUMNSTORE INDEX NCCI_OrderItems_Analytics
+ON dbo.OrderItems (TenantId, SKUId, Quantity, UnitPrice, CostPrice, SubTotal);
+
+-- 5. Trigger bảo vệ Sổ cái bất biến
+CREATE TRIGGER trg_InventoryLedger_AppendOnly ON dbo.InventoryLedger
+AFTER UPDATE, DELETE AS
+BEGIN
+    SET NOCOUNT ON;
+    RAISERROR(N'VI PHẠM NGUYÊN TẮC KẾ TOÁN: Bảng InventoryLedger là sổ cái Append-only, cấm tuyệt đối UPDATE/DELETE!', 16, 1);
+    ROLLBACK TRANSACTION;
+END;
+```
+</details>
+
+---
+
+## 🗺️ 4. Mô Hình Thực Thể ERD & Cơ Sở Dữ Liệu
+
+Hệ thống CSDL được chuẩn hóa ở dạng chuẩn 3NF kết hợp với các kỹ thuật vật lý nâng cao:
+
+```
+[Tenants] (Cửa hàng / Chuỗi)
+   │
+   ├──< [Users] (Tài khoản & Phân quyền RBAC)
+   ├──< [Branches] (Chi nhánh & Tọa độ GIS Location)
+   │       │
+   │       └──< [Inventories] (Tồn kho vật lý: OnHand, Reserved)
+   │                 │
+   │                 └──< [InventoryLedger] (Sổ cái xuất/nhập/điều chỉnh - Partitioned)
+   │
+   ├──< [Categories] (Danh mục cây phân cấp ParentId)
+   ├──< [Brands] (Thương hiệu)
+   └──< [Products] (Sản phẩm)
+           │
+           └──< [SKUs] (Mã biến thể SKU, Barcode EAN-13, Giá vốn WAC)
+                   │
+                   ├──< [ListedPrices] (Bảng giá niêm yết - Temporal Table)
+                   └──< [OrderItems] (Chi tiết đơn hàng - Columnstore Index)
+                           ▲
+                           │
+                   [Orders] (Đơn hàng đa kênh: POS, Shopee, TikTok, Lazada)
 ```
 
 ---
 
-### Đặc Tả Chi Tiết 14 Bảng Thực Thể
+## 📂 5. Cấu Trúc Dự Án
 
-| STT | Tên Bảng | Mục Đích Nghiệp Vụ | Khóa Chính (PK) | Khóa Ngoại (FK) & Ràng Buộc (Constraints) | Tính Năng Nâng Cao Áp Dụng |
-| :---: | :--- | :--- | :--- | :--- | :--- |
-| **1** | `dbo.Tenants` | Cửa hàng / Doanh nghiệp thuê nền tảng | `TenantId (int)` | `Name NOT NULL, IsActive DEFAULT 1` | Bảng gốc của Multi-Tenancy |
-| **2** | `dbo.Users` | Tài khoản nhân viên đăng nhập | `UserId (int)` | `TenantId -> Tenants`, `UQ(TenantId, Email)`, `CK(Role IN Owner, Staff, Cashier)` | Mã hóa BCrypt ($2a$11$) |
-| **3** | `dbo.Branches` | Chi nhánh, cửa hàng, kho bãi vật lý | `BranchId (int)` | `TenantId -> Tenants` | **Spatial GIS (`geography`, SRID 4326)**, RLS |
-| **4** | `dbo.GeoPins` | Điểm ghim định vị & Hub bưu cục | `PinId (int)` | `TenantId -> Tenants` | **Spatial GIS**, RLS cô lập điểm ghim |
-| **5** | `dbo.Categories` | Danh mục sản phẩm (đa cấp cha-con) | `CategoryId (int)` | `ParentId -> Categories(CategoryId)` | RLS |
-| **6** | `dbo.Brands` | Thương hiệu sản phẩm | `BrandId (int)` | `TenantId -> Tenants` | RLS |
-| **7** | `dbo.Products` | Sản phẩm cha | `ProductId (int)` | `CategoryId`, `BrandId` | RLS |
-| **8** | `dbo.SKUs` | Biến thể chi tiết (Size, Màu, Barcode) | `SKUId (int)` | `ProductId -> Products`, `UQ(TenantId, SkuCode)`, `UX(Barcode)` | RLS, Indexed Barcode EAN-13 |
-| **9** | `dbo.ListedPrices` | Bảng giá niêm yết bán lẻ và bán buôn | `PriceId (int)` | `SKUId -> SKUs`, `CK(RetailPrice >= 0)`, `CK(WholesalePrice >= 0)` | **Temporal Table (System-Versioned)** |
-| **10** | `dbo.StockLevels` | Mức tồn thực tế và giữ chỗ tại chi nhánh | `(BranchId, SKUId)` | `Available AS (OnHand - Reserved) PERSISTED`, `CK(NoOversell)` | **Pessimistic Locking (`UPDLOCK, ROWLOCK`)** |
-| **11** | `dbo.InventoryLedger` | Sổ cái kho bất biến ghi mọi biến động | `(CreatedAt, LedgerId)` | `BranchId`, `SKUId`, `CK(Type IN IN, OUT)` | **Table Partitioning theo tháng**, **Append-Only Trigger** |
-| **12** | `dbo.PurchaseReceipts` | Phiếu nhập kho từ nhà cung cấp | `ReceiptId (bigint)` | `BranchId -> Branches`, `CK(Status IN Draft, Confirmed)` | RLS |
-| **13** | `dbo.PurchaseReceiptItems` | Dòng sản phẩm và đơn giá nhập kho | `ItemId (bigint)` | `ReceiptId -> PurchaseReceipts`, `SKUId -> SKUs` | **Weighted Average Cost (WAC) Trigger** |
-| **14** | `dbo.Orders` | Đơn hàng hợp nhất (POS, Shopee, TikTok, Lazada) | `OrderId (bigint)` | `BranchId -> Branches`, `UQ(TenantId, OrderNo)`, `UX(ExternalOrderId)` | **State Machine Trigger**, Sequence `seq_OrderNo` |
-| **15** | `dbo.OrderItems` | Chi tiết sản phẩm trong đơn hàng | `ItemId (bigint)` | `OrderId -> Orders`, `SKUId -> SKUs`, `UQ(OrderId, SKUId)` | **Nonclustered Columnstore Index (NCCI)** |
-| **16** | `dbo.StockTransfers` | Phiếu điều chuyển kho 2 bước | `TransferId (bigint)` | `FromBranchId`, `ToBranchId`, `SKUId`, `CK(Status)` | **In-Transit Transfer 2 bước**, RLS |
-| **17** | `dbo.WebhookEvents` | Sự kiện Webhook nhận từ các sàn TMĐT | `EventId (bigint)` | `CK(ISJSON(Payload) = 1)`, `UX(ExternalOrderId)` | **JSON Engine (`OPENJSON`)**, Idempotency |
-
----
-
-### Quy Trình Chuyển Kho 2 Bước (In-Transit Stock Transfer)
-
-Để đáp ứng chuẩn mực quản trị kho hàng doanh nghiệp và bảo toàn tính toàn vẹn dữ liệu, quy trình chuyển kho được thiết kế 2 bước độc lập:
-
-$$\text{Bước 1: Xuất kho chuyển đi} \xrightarrow{\text{Status: InTransit}} \text{Hàng trên đường vận chuyển} \xrightarrow{\text{Xác nhận nhận hàng}} \text{Bước 2: Nhập kho đích}$$
-
-1. **Bước 1 (`dbo.usp_CreateStockTransfer`):**
-   - Khóa dòng kiểm tra tồn khả dụng tại Kho A: $\text{Available}_A \ge \text{Quantity}$.
-   - Trừ $\text{OnHand}_A$, ghi bút toán Sổ cái OUT (`TxnType='Transfer'`, `ReferenceType='TransferOut'`).
-   - Khởi tạo phiếu chuyển trong `dbo.StockTransfers` ở trạng thái **`InTransit`**. Hàng không nằm ở bất kỳ kho nào (tránh bị bán âm).
-2. **Bước 2 (`dbo.usp_CompleteStockTransfer`):**
-   - Khi thủ kho B kiểm đếm và bấm "Xác nhận nhận hàng".
-   - Tăng $\text{OnHand}_B$, ghi bút toán Sổ cái IN (`TxnType='Transfer'`, `ReferenceType='TransferIn'`).
-   - Cập nhật phiếu chuyển sang trạng thái **`Completed`**.
+```
+oism-web/
+├── .github/workflows/ci-cd.yml      # CI/CD Pipeline (MSSQL 2022 Test + .NET Build + Docker)
+├── backend/                         # Backend Web API
+│   ├── Program.cs                   # Endpoints, JWT Auth, RLS SessionContext, Concurrency Logic
+│   ├── appsettings.json             # Chuỗi kết nối SQL Server & Secret Token
+│   ├── backend.csproj               # .NET 8, Dapper, Microsoft.Data.SqlClient
+│   └── Dockerfile                   # Dockerfile Backend
+├── scripts/init-db.sh               # Shell script tự động khởi tạo DB trong Docker
+├── SQLQuery1.sql                    # Script DDL Schema, RLS, Indexes, Procedures, Triggers
+├── OISM_User_Accounts.sql           # Danh sách tài khoản mẫu theo vai trò
+├── OISM_Spatial_GPS_Demo.sql        # Dữ liệu GPS chi nhánh tại TP.HCM & Hà Nội
+├── index.html                       # Frontend Single-Page POS & Admin Dashboard
+├── docker-compose.yml               # File điều phối 4 container (DB, Seeder, API, Web)
+├── docker-start.bat                 # Script 1-click khởi chạy bằng Docker
+├── start.bat                        # Script khởi chạy Backend cục bộ với SSMS
+├── push_to_github.bat               # Script đẩy mã nguồn lên GitHub
+├── nginx.conf                       # Cấu hình Web Server Nginx
+├── Dockerfile.frontend              # Dockerfile Frontend
+├── BAO_CAO_CAC_YEU_CAU_CON_THIEU_OISM.md # Báo cáo phân tích đối soát đồ án
+└── README.md                        # Tài liệu hướng dẫn sử dụng chi tiết
+```
 
 ---
 
-## 🛡️ 10 KỸ THUẬT CSDL SQL SERVER 2022 ĐỘT PHÁ
+## 🚀 6. Hướng Dẫn Cài Đặt & Khởi Chạy
 
-| STT | Tính Năng SQL Server 2022 | Đối Tượng Triển Khai | Giá Trị & Mục Đích Nghiệp Vụ |
-| :---: | :--- | :--- | :--- |
-| **1** | **RCSI (Read Committed Snapshot Isolation)** | `ALTER DATABASE OISM SET READ_COMMITTED_SNAPSHOT ON` | Đọc dữ liệu từ phiên bản Snapshot trong `tempdb`. Thu ngân truy vấn kiểm tra tồn kho tại POS không bao giờ bị chặn (blocking) bởi thủ kho đang nhập hàng ngàn dòng sản phẩm. Triệt tiêu Deadlock đọc-ghi. |
-| **2** | **Row-Level Security (RLS)** | `sec.fn_TenantPredicate`, `sec.TenantIsolationPolicy` | Bảo mật cô lập dữ liệu tuyệt đối giữa các cửa hàng ở tầng Database Engine. Dù câu lệnh `SELECT * FROM dbo.Products` không có mệnh đề `WHERE TenantId = ...`, Database vẫn tự lọc chỉ hiển thị dữ liệu của Tenant hiện tại. |
-| **3** | **Temporal Tables (System-Versioned)** | `dbo.ListedPrices` & `dbo.ListedPricesHistory` | Tự động ghi nhận lịch sử biến động giá bán theo thời gian chuẩn ISO (`PERIOD FOR SYSTEM_TIME`) mà không cần lập trình Trigger. Dễ dàng truy vấn giá bán tại bất kỳ thời điểm nào trong quá khứ (`FOR SYSTEM_TIME AS OF`). |
-| **4** | **Spatial GIS Data (SRID 4326)** | `dbo.Branches.GeoLocation` (`geography`), `Location.STDistance()` | Sử dụng chuẩn địa lý WGS84 lưu trữ tọa độ kinh độ/vĩ độ chi nhánh. Tự động tính toán khoảng cách thực tế giữa khách hàng và các chi nhánh để gợi ý điểm giao hàng gần nhất và vẽ bản đồ Leaflet. |
-| **5** | **Table Partitioning (Phân Vùng Bảng)** | `pf_Ledger_Monthly`, `ps_Ledger_Monthly` trên `dbo.InventoryLedger` | Phân mảnh Sổ cái kho thành các phân vùng độc lập theo từng tháng. Cho phép truy vấn kiểm toán, bảo trì chỉ mục và lưu trữ dữ liệu lịch sử hàng triệu dòng mà không làm giảm tốc độ hệ thống. |
-| **6** | **Append-Only Trigger** | `trg_InventoryLedger_AppendOnly` trên `dbo.InventoryLedger` | Ngăn chặn tuyệt đối mọi hành vi sửa (`UPDATE`) hoặc xóa (`DELETE`) trên bảng Sổ cái kho. Mọi thay đổi bắt buộc phải thông qua bút toán đảo/điều chỉnh (`Compensating Entry`), đảm bảo chuẩn mực kế toán kiểm toán. |
-| **7** | **Weighted Average Cost (WAC) Trigger** | `trg_PurchaseReceiptItems_WeightedAvgCost` trên `PurchaseReceiptItems` | Tự động tính lại Giá vốn bình quân gia quyền của SKU ngay khi thủ kho nạp phiếu nhập: $\text{Cost}_{\text{mới}} = \frac{\text{Tồn cũ} \times \text{Giá cũ} + \text{Nhập mới} \times \text{Giá nhập}}{\text{Tồn cũ} + \text{Nhập mới}}$. |
-| **8** | **Nonclustered Columnstore Index (NCCI)** | `NCCI_OrderItems_Analytics` trên `dbo.OrderItems` | Nén cột dữ liệu phân tích với tỉ lệ nén cao, áp dụng cơ chế Batch Execution Mode giúp tăng tốc độ xử lý các báo cáo doanh thu, giá vốn và lãi gộp đa kênh nhanh gấp 10-100 lần so với B-Tree truyền thống. |
-| **9** | **Pessimistic Locking & Anti-Oversell** | `WITH (UPDLOCK, ROWLOCK) + OPTION (FORCE ORDER)` | Sử dụng khóa độc quyền dòng ngay khi đọc giỏ hàng trong `dbo.usp_ReserveOrder`, đảm bảo trong sự kiện Flash Sale với hàng trăm request đồng thời, chỉ những đơn còn đủ tồn khả dụng mới được giữ chỗ. |
-| **10** | **State Machine Trigger** | `trg_Orders_StateMachine` trên `dbo.Orders` | Kiểm soát nghiêm ngặt vòng đời đơn hàng: chỉ cho phép chuyển từ $\text{Draft} \to \text{Reserved} \to \text{Confirmed} \to \text{Completed}$, hoặc hủy về $\text{Cancelled}$. Chặn đứng mọi hành vi nhảy cóc trạng thái trái phép. |
+Bạn có thể lựa chọn 1 trong 3 phương pháp khởi chạy tùy thuộc vào môi trường máy tính:
 
----
+### 🌟 Cách 1: Khởi Chạy Tự Động Bằng Docker (Khuyên dùng - Nhanh nhất)
+> *Không yêu cầu cài đặt .NET SDK hay SQL Server.*
 
-## 🚀 HƯỚNG DẪN KHỞI CHẠY ỨNG DỤNG (3 CÁCH)
-
-### Cách 1: Khởi Chạy Bằng Docker & Docker Compose (Khuyên dùng - 1 Click)
-Toàn bộ môi trường SQL Server 2022, Seeder CSDL, Backend .NET 8 và Web POS Nginx đã được đóng gói hoàn chỉnh:
-1. Đảm bảo máy tính đã cài đặt và đang bật **Docker Desktop**.
-2. Nhấp đúp vào tệp **`docker-start.bat`** tại thư mục gốc dự án (hoặc mở Terminal chạy):
+1. Khởi động ứng dụng **Docker Desktop**.
+2. Nhấp đúp vào file **`docker-start.bat`** (hoặc mở Terminal tại thư mục này):
    ```bash
    docker compose up -d --build
    ```
-3. Chờ 15-20 giây để Database Engine khởi động và tự động chạy Seeder nạp toàn bộ cấu trúc dữ liệu và tài khoản.
+3. Chờ 15-20 giây để hệ thống tự động khởi tạo container, chạy seed dữ liệu CSDL.
 4. Truy cập hệ thống:
-   - **Giao diện Web POS & Dashboard:** [http://localhost:8080](http://localhost:8080)
-   - **Backend API Health Check:** [http://localhost:5000/api/health](http://localhost:5000/api/health)
-   - **Kết nối SSMS vào Docker:** `localhost,1433` *(User: `sa` | Password: `Oism2026@StrongPassword!`)*
+   * **Giao diện Web App:** [http://localhost:8080](http://localhost:8080)
+   * **Kiểm tra API Health:** [http://localhost:5000/api/health](http://localhost:5000/api/health)
+   * **Kết nối SQL Server 2022:** `localhost,1433` *(User: `sa` | Password: `Oism2026@StrongPassword!`)*
 
 ---
 
-### Cách 2: Khởi Chạy Trực Tiếp Qua SSMS 2022 & Backend Cục Bộ
-Dành cho quá trình làm việc, debug truy vấn trực tiếp trên Microsoft SQL Server Management Studio:
-1. Mở **SSMS 2022**, mở tệp **`database/SQLQuery1.sql`** và nhấn **F5 (Execute)** để khởi tạo Database `OISM`, các bảng, trigger, thủ tục và nạp đầy đủ dữ liệu mẫu.
-2. Nhấp đúp vào tệp **`start.bat`**, chọn **[1]** để khởi động Backend API .NET 8 và tự động mở Web App.
-3. Mọi thao tác tạo đơn, xuất nhập kho, chuyển kho trên Web sẽ được ghi nhận trực tiếp vào SSMS theo thời gian thực!
+### 💻 Cách 2: Khởi Chạy Thủ Công Với SQL Server Management Studio (SSMS)
+> *Dành cho việc chấm điểm trực tiếp, đặt breakpoint và debug T-SQL.*
+
+1. Mở **SSMS**, kết nối tới instance SQL Server 2022 trên máy bạn.
+2. Mở file **`SQLQuery1.sql`** và nhấn **F5** để tạo Database `OISM`, các bảng, RLS, Indexes, Procedures và Triggers.
+3. Mở và chạy tiếp **`OISM_User_Accounts.sql`** và **`OISM_Spatial_GPS_Demo.sql`** để nạp tài khoản và tọa độ GPS.
+4. Nhấp đúp vào **`start.bat`**, chọn **[1]** để khởi động Backend API và tự động mở Web App.
+5. Mọi thao tác xuất/nhập/bán hàng trên Web sẽ được ghi nhận và truy vấn trực tiếp trong SSMS theo thời gian thực!
 
 ---
 
-### Cách 3: Chạy Độc Lập Giả Lập In-Memory (Trực tiếp trên Trình duyệt)
-Dành cho trường hợp máy tính chấm thi không có sẵn Docker hay SQL Server:
-- Nhấp đúp mở trực tiếp tệp **`frontend/index.html`** bằng trình duyệt bất kỳ (Chrome, Edge, Firefox).
-- Hệ thống tự động kích hoạt **In-Memory Mock Engine** tích hợp sẵn đầy đủ dữ liệu mẫu, cho phép demo mượt mà 100% tính năng POS, bản đồ GPS và mô phỏng Webhook.
+### 🌐 Cách 3: Chế Độ Giả Lập In-Memory (Trực tiếp trên Trình duyệt)
+> *Phù hợp khi trình chiếu trên máy chấm thi không có sẵn môi trường lập trình.*
+
+* Nhấp đúp mở trực tiếp file **`index.html`** trên trình duyệt (Chrome, Edge, Firefox).
+* Hệ thống sẽ tự động kích hoạt **In-Memory Engine** với dữ liệu mẫu hoàn chỉnh để thử nghiệm tính năng mà không phát sinh lỗi kết nối.
 
 ---
 
-## 🔑 TÀI KHOẢN ĐĂNG NHẬP MẪU & PHÂN QUYỀN (RBAC)
+## 🔑 7. Ma Trận Tài Khoản & Phân Quyền (RBAC)
 
-Tất cả tài khoản mẫu đều sử dụng mật khẩu mặc định: **`123456`** *(Đã được băm an toàn bằng thuật toán BCrypt $2a$11$)*:
+Dữ liệu được chuẩn bị sẵn cho **2 Tenant độc lập** nhằm kiểm chứng tính năng **Row-Level Security**:
 
-| Doanh Nghiệp (Tenant) | Email Đăng Nhập | Mật Khẩu | Vai Trò (Role) | Phạm Vi Quyền Hạn |
+| Tenant / Cửa Hàng | Email Đăng Nhập | Mật Khẩu | Vai Trò (Role) | Chức Năng Cho Phép |
 | :--- | :--- | :---: | :---: | :--- |
-| **Cửa hàng Thời trang Minh Anh** (Tenant 1) | `owner@minhanh.vn` | `123456` | **Owner** | Toàn quyền quản trị cửa hàng, xem báo cáo doanh thu & lợi nhuận gộp |
-| **Cửa hàng Thời trang Minh Anh** (Tenant 1) | `kho@minhanh.vn` | `123456` | **Staff** | Quản lý kho, nhập hàng, kiểm kê, tạo phiếu chuyển kho |
-| **Cửa hàng Thời trang Minh Anh** (Tenant 1) | `thungan@minhanh.vn` | `123456` | **Cashier** | Quầy bán lẻ POS Fast Checkout, in hóa đơn thanh toán |
-| **Cửa hàng Nông sản Hữu cơ Xanh** (Tenant 2) | `owner@nongsanxanh.vn` | `123456` | **Owner** | Toàn quyền quản trị Tenant 2 (Chứng minh cô lập RLS) |
-| **Cửa hàng Nông sản Hữu cơ Xanh** (Tenant 2) | `thukho@nongsanxanh.vn` | `123456` | **Staff** | Thủ kho Tenant 2 |
+| **Cửa hàng Thời trang Minh Anh** *(Tenant 1)* | `owner@minhanh.vn` | `123456` | **Owner** | Toàn quyền: Xem báo cáo tài chính, quản lý chi nhánh, sản phẩm, giá bán. |
+| **Cửa hàng Thời trang Minh Anh** *(Tenant 1)* | `thungan@minhanh.vn` | `123456` | **Cashier** | Quầy bán hàng POS, quét barcode EAN-13, in hóa đơn thanh toán. Bị ẩn báo cáo tài chính. |
+| **Cửa hàng Nông sản Hữu cơ Xanh** *(Tenant 2)* | `owner@nongsanxanh.vn` | `123456` | **Owner** | Quản trị cửa hàng nông sản. Tuyệt đối không nhìn thấy dữ liệu của Tenant 1. |
+| **Cửa hàng Nông sản Hữu cơ Xanh** *(Tenant 2)* | `thukho@nongsanxanh.vn` | `123456` | **Warehouse** | Quản lý kho: Nhập kho NCC, xuất hủy, kiểm kê, kích hoạt trigger tính giá vốn WAC. |
 
 ---
 
-## 🔌 DANH MỤC REST API & WEBHOOK TMĐT
+## 🎯 8. Kịch Bản 5 Bước Trình Diễn Chấm Thi
 
-| Phương Thức | Endpoint | Chức Năng | Mô Tả Tham Số Chính |
-| :---: | :--- | :--- | :--- |
-| `POST` | `/api/auth/login` | Đăng nhập hệ thống | `Email`, `Password` $\to$ Cấp JWT Token (TenantId, Role) |
-| `POST` | `/api/auth/register` | Đăng ký cửa hàng (Tenant) mới | `StoreName`, `BranchName`, `FullName`, `Email`, `Password` |
-| `GET` | `/api/branches` | Lấy danh sách chi nhánh | `tenantId` $\to$ Danh sách kèm tọa độ GPS |
-| `POST` | `/api/branches` | Thêm chi nhánh mới | `TenantId`, `Name`, `Address`, `Latitude`, `Longitude` |
-| `GET` | `/api/geopins` | Lấy các điểm ghim bản đồ GIS | `tenantId` $\to$ Danh sách Hub, bưu cục |
-| `POST` | `/api/geopins` | Tạo điểm ghim bản đồ mới | `TenantId`, `Title`, `Category`, `Latitude`, `Longitude` |
-| `GET` | `/api/products` | Lấy sản phẩm & tồn kho | `tenantId`, `branchId` $\to$ SKU, Giá niêm yết, Tồn khả dụng |
-| `POST` | `/api/checkout` | Thanh toán nhanh quầy POS | `BranchId`, `PaymentMethod`, `Items` $\to$ Atomic Checkout |
-| `POST` | `/api/inventory/transfer` | Điều chuyển kho hàng 2 bước | `FromBranchId`, `ToBranchId`, `SKUId`, `Quantity` |
-| `POST` | `/api/inventory/purchase` | Xác nhận nhập kho nhà cung cấp | `BranchId`, `SupplierName`, `Items` (SKUId, Qty, ImportPrice) |
-| `POST` | `/api/inventory/stocktake` | Điều chỉnh cân đối kiểm kê kho | `BranchId`, `SKUId`, `CountedQty` |
-| `POST` | `/api/webhook` | Tiếp nhận đơn sàn TMĐT | `BranchId`, `Channel` (Shopee/TikTok/Lazada), `Payload` (JSON) |
-| `GET` | `/api/reports/revenue` | Báo cáo doanh thu & lợi nhuận | Lọc theo ngày, kênh bán hàng, chi nhánh (NCCI) |
-| `GET` | `/api/reports/slow-moving` | Báo cáo hàng bán chậm (> 30 ngày) | Phân tích hàng tồn không có biến động xuất |
-
----
-
-## 🔄 QUY TRÌNH KIỂM THỬ TỰ ĐỘNG & CI/CD
-
-Dự án thiết lập luồng tích hợp và triển khai liên tục tự động (**GitHub Actions CI/CD**) tại `.github/workflows/ci-cd.yml` mỗi khi có commit hoặc pull request:
+Kịch bản được thiết kế bám sát yêu cầu chấm điểm của Giảng viên môn **Hệ Quản Trị CSDL**:
 
 ```text
-┌────────────────────────────────────────────────────────────────────────┐
-│                   GITHUB ACTIONS CI/CD WORKFLOW PIPELINE               │
-├─────────────────────────┬────────────────────────┬─────────────────────┤
-│ Job 1: SQL Server 2022  │ Job 2: Backend Build   │ Job 3: Docker Build │
-│ - Khởi tạo MSSQL 2022   │ - Setup .NET 8.0 SDK   │ - Build Frontend Img│
-│ - Thực thi SQLQuery1    │ - Restore NuGet PKGs   │ - Build Backend Img │
-│ - Chạy Test Suite T1-T6 │ - Build Release binary │ - docker compose up │
-└─────────────────────────┴────────────────────────┴─────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ Bước 1: Chứng minh Row-Level Security (RLS)                                    │
+│ ├── Đăng nhập `owner@minhanh.vn` (Tenant 1) -> Xem danh sách sản phẩm.          │
+│ ├── Đăng xuất, đăng nhập `owner@nongsanxanh.vn` (Tenant 2) -> Dữ liệu cách ly. │
+│ └── Mở SSMS xem hàm vị từ `sec.fn_TenantSecurityPredicate`.                     │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ Bước 2: Bán hàng POS & Bút toán Sổ cái tự động                                  │
+│ ├── Vào POS chọn sản phẩm, nhấn F4 thanh toán tiền mặt.                         │
+│ └── Mở SSMS chạy: SELECT TOP 5 * FROM dbo.InventoryLedger ORDER BY LedgerId DESC│
+│     -> Chứng minh bút toán xuất kho Type='OUT', TxnType='Sale' sinh tức thì.    │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ Bước 3: Kiểm thử Tính Bất Biến của Sổ Cái (Append-Only Protection)             │
+│ ├── Trong SSMS thực thi: DELETE FROM dbo.InventoryLedger;                       │
+│ └── Kết quả: Trigger `trg_InventoryLedger_AppendOnly` chặn đứng và báo lỗi.     │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ Bước 4: Kiểm soát Tương tranh & Chống Bán Âm (Flash Sale Concurrency)           │
+│ ├── Chọn sản phẩm FLASH-001 (chỉ còn đúng 1 tồn kho).                           │
+│ ├── Nhấn nút "Chạy mô phỏng Flash Sale 50 luồng đồng thời".                     │
+│ └── Kết quả: Đúng 1 đơn thành công, 49 đơn từ chối, tồn kho không bao giờ âm. │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ Bước 5: Bản đồ GPS Chi Nhánh & Temporal Table Biến Động Giá                     │
+│ ├── Mở tab GIS, xem bản đồ Leaflet và hàm `STDistance` tìm shop gần nhất.       │
+│ ├── Đổi giá niêm yết của 1 SKU trên Web.                                        │
+│ └── Mở SSMS chạy: SELECT * FROM dbo.ListedPrices FOR SYSTEM_TIME ALL            │
+│     -> Chứng minh toàn bộ lịch sử giá cũ được lưu trữ tự động.                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 🎤 KỊCH BẢN TRÌNH DIỄN KHI BẢO VỆ ĐỒ ÁN
+## 📡 9. Danh Mục API Endpoints
 
-Để đạt điểm số tối đa trước Hội đồng chấm thi môn Hệ Quản Trị CSDL, nhóm thực hiện kịch bản 5 bước:
-
-1. **Bước 1 - Khởi chạy & Chứng minh Bảo mật RLS:**
-   - Mở SSMS thực thi `SQLQuery1.sql`.
-   - Đăng nhập `owner@minhanh.vn` (Tenant 1): Hệ thống chỉ hiện sản phẩm và chi nhánh của Minh Anh.
-   - Chuyển sang tài khoản `owner@nongsanxanh.vn` (Tenant 2): Dữ liệu hoàn toàn tách biệt dù dùng chung 1 database.
-2. **Bước 2 - Bán hàng POS & Bút toán Sổ cái Append-Only:**
-   - Tại quầy POS, chọn sản phẩm `AO-THUN-DEN-M`, nhấn **F4** thanh toán tiền mặt.
-   - Mở SSMS truy vấn `dbo.InventoryLedger`: Bút toán xuất kho (`Type='OUT', TxnType='Sale'`) được sinh tự động tức thời.
-   - Thử gõ lệnh `DELETE FROM dbo.InventoryLedger` trong SSMS: Chỉ cho giảng viên thấy Trigger chặn đứng và báo lỗi 50050.
-3. **Bước 3 - Kiểm thử Khóa Tương tranh & Chống Bán âm (Flash Sale):**
-   - Vào Tab Mô phỏng Webhook, chọn sản phẩm `FLASH-001` (chỉ còn đúng 1 tồn kho).
-   - Nhấn nút "Chạy Flash Sale 50 luồng đồng thời": Duy nhất 1 đơn thành công, 49 đơn bị từ chối an toàn, tồn khả dụng không bao giờ bị âm.
-4. **Bước 4 - Bản đồ GIS Không gian & Chuyển kho 2 bước:**
-   - Chuyển sang Tab Bản đồ GPS, ghim 1 điểm mới để chứng minh việc lưu trữ đối tượng `geography::Point(Lat, Lng, 4326)`.
-   - Chuyển sang Tab Chuyển kho, tạo phiếu chuyển kho từ Thủ Đức về Quận 1: Minh họa trạng thái `InTransit` và hoàn tất chuyển kho.
-5. **Bước 5 - Temporal Table & Báo cáo Columnstore Index:**
-   - Sửa giá bán lẻ của một sản phẩm, sau đó truy vấn `dbo.ListedPricesHistory` để chứng minh SQL Server tự động lưu lịch sử thay đổi giá.
-   - Mở tab Báo cáo doanh thu: Chứng minh Nonclustered Columnstore Index tính toán tức thì Doanh thu, Giá vốn và Lãi gộp.
+| Nhóm Chức Năng | Phương Thức | Endpoint URI | Mô Tả Nghiệp Vụ |
+| :--- | :---: | :--- | :--- |
+| **Xác thực** | `POST` | `/api/auth/login` | Đăng nhập, trả về JWT Token chứa `TenantId, Role` |
+| **Xác thực** | `POST` | `/api/auth/register` | Đăng ký chuỗi cửa hàng Tenant mới |
+| **Chi nhánh** | `GET` | `/api/branches` | Lấy danh sách chi nhánh (Kèm tọa độ GPS WGS84) |
+| **Sản phẩm** | `GET` | `/api/products` | Danh sách sản phẩm & danh mục phân cấp |
+| **Bán hàng POS** | `POST` | `/api/orders/pos` | Tạo đơn hàng bán lẻ tại quầy, ghi nhận sổ cái kho |
+| **Flash Sale** | `POST` | `/api/webhook/simulate` | Mô phỏng nhận đơn TMĐT với kiểm soát khóa tương tranh |
+| **Sổ cái kho** | `GET` | `/api/inventory/ledger` | Lấy dữ liệu sổ cái phân vùng theo tháng |
+| **Hệ thống** | `GET` | `/api/health` | Kiểm tra tình trạng kết nối tới SQL Server 2022 |
 
 ---
 
-## 📁 CẤU TRÚC THƯ MỤC DỰ ÁN
+## 🛠️ 10. Khắc Phục Sự Cố Thường Gặp
 
-```text
-H-QTCSDL/
-├── .github/
-│   └── workflows/
-│       └── ci-cd.yml                # Quy trình kiểm thử CI/CD tự động trên GitHub Actions
-├── backend/                         # Backend Web API (ASP.NET Core 8.0 Minimal API + Dapper)
-│   ├── Properties/
-│   │   └── launchSettings.json
-│   ├── appsettings.json             # Chuỗi kết nối SQL Server 2022
-│   ├── backend.csproj               # Cấu hình dự án C# & NuGet dependencies
-│   ├── Dockerfile                   # Dockerfile đóng gói Backend API
-│   └── Program.cs                   # Mã nguồn REST API & RLS Tenant Session Context
-├── database/                        # Toàn bộ kịch bản Cơ sở dữ liệu SQL Server 2022
-│   ├── SQLQuery1.sql                # Master Database Script (DDL, RLS, Triggers, Procs, Seed)
-│   ├── OISM_Spatial_GPS_Demo.sql    # Kịch bản demo dữ liệu không gian Spatial GIS (SRID 4326)
-│   ├── OISM_User_Accounts.sql       # Kịch bản quản lý tài khoản & mã hóa BCrypt
-│   └── SQLFile1.sql                 # Kịch bản truy vấn mẫu kiểm thử RLS Context
-├── docs/                            # Hồ sơ & Tài liệu kỹ thuật đồ án
-│   ├── BAO_CAO_CAC_YEU_CAU_CON_THIEU_OISM.md   # Báo cáo đối soát yêu cầu đề cương
-│   └── BAO_CAO_CAC_YEU_CAU_CON_THIEU_OISM.docx # Phiên bản Word chính thức
-├── frontend/                        # Giao diện Web POS & Dashboard đa kênh
-│   ├── index.html                   # Single-Page Web App (Dual-mode In-Memory & Live API)
-│   ├── nginx.conf                   # Cấu hình Reverse Proxy Nginx
-│   ├── Dockerfile                   # Dockerfile đóng gói Frontend Web Server
-│   └── success.mp3                  # Hiệu ứng âm thanh thông báo
-├── scripts/
-│   └── init-db.sh                   # Script tự động khởi tạo CSDL trong Docker
-├── docker-compose.yml               # File điều phối Docker (MSSQL 2022, Seeder, API, Frontend)
-├── docker-start.bat                 # 1-Click khởi động toàn bộ hệ thống bằng Docker
-├── start.bat                        # Khởi động Backend .NET cục bộ kết nối SSMS
-├── push_to_github.bat               # Script đồng bộ & đẩy toàn bộ mã nguồn lên GitHub
-├── .dockerignore                    # Danh sách loại trừ khi build Docker
-├── .gitignore                       # Danh sách loại trừ của Git
-└── README.md                        # Báo cáo và tài liệu hướng dẫn kỹ thuật chi tiết
-```
+* **Lỗi 1: Port 1433 hoặc 5000 đã bị chiếm dụng**
+  * *Xử lý:* Đổi port trong `docker-compose.yml` hoặc tắt ứng dụng đang chiếm port bằng lệnh:
+    ```powershell
+    Get-Process -Id (Get-NetTCPConnection -LocalPort 1433).OwningProcess | Stop-Process
+    ```
+* **Lỗi 2: Docker báo lỗi "Cannot connect to Docker daemon"**
+  * *Xử lý:* Mở Docker Desktop từ màn hình Desktop và chờ icon chuyển sang màu xanh lá cây ("Engine running").
+* **Lỗi 3: Kết nối SSMS báo lỗi SSL / Certificate**
+  * *Xử lý:* Trong cửa sổ kết nối SSMS, chọn **Options** $\rightarrow$ Tích chọn **Trust Server Certificate**.
 
 ---
 
-## 👥 THÀNH VIÊN NHÓM THỰC HIỆN
-- **Đề tài:** Hệ Thống Quản Lý Bán Hàng & Tồn Kho Đa Kênh (OISM)
-- **Môn học:** Hệ Quản Trị Cơ Sở Dữ Liệu (H-QTCSDL)
-- **Giảng viên hướng dẫn:** Bộ môn Hệ Thống Thông Tin / Khoa CNTT
-- **GitHub:** [@maicotien552006-hash](https://github.com/maicotien552006-hash)
+## 👥 11. Thông Tin Nhóm Thực Hiện
+
+* **Giảng viên hướng dẫn:** Bộ môn Hệ Quản Trị Cơ Sở Dữ Liệu
+* **Nhóm sinh viên thực hiện:**
+  - Thành viên phụ trách CSDL: T-SQL Scripts, RLS, Indexes, Triggers, GIS.
+  - Thành viên phụ trách Backend & DevOps: ASP.NET Core, Docker, GitHub Actions CI/CD.
+  - Thành viên phụ trách Frontend: UI/UX POS, Dashboard & Webhook Simulator.
 
 ---
-*Bản quyền tài liệu và mã nguồn thuộc về Nhóm dự án OISM - H-QTCSDL 2026.*
+<div align="center">
+  <sub>Đồ án Môn học Hệ Quản Trị Cơ Sở Dữ Liệu • Bản quyền thuộc về Nhóm tác giả © 2026</sub>
+</div>

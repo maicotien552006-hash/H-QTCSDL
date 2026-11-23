@@ -45,9 +45,9 @@ services:
       - DB_HOST=sqlserver
       - MSSQL_SA_PASSWORD=Oism2026@StrongPassword!
     volumes:
-      - ./database/SQLQuery1.sql:/scripts/SQLQuery1.sql:ro
-      - ./database/OISM_User_Accounts.sql:/scripts/OISM_User_Accounts.sql:ro
-      - ./database/OISM_Spatial_GPS_Demo.sql:/scripts/OISM_Spatial_GPS_Demo.sql:ro
+      - ./SQLQuery1.sql:/scripts/SQLQuery1.sql:ro
+      - ./OISM_User_Accounts.sql:/scripts/OISM_User_Accounts.sql:ro
+      - ./OISM_Spatial_GPS_Demo.sql:/scripts/OISM_Spatial_GPS_Demo.sql:ro
       - ./scripts/init-db.sh:/scripts/init-db.sh:ro
     entrypoint: ["/bin/bash", "/scripts/init-db.sh"]
     networks:
@@ -82,8 +82,8 @@ services:
   # ----------------------------------------------------------------------------
   frontend:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfile.frontend
     container_name: oism-frontend-web
     depends_on:
       - backend

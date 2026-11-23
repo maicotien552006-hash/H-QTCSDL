@@ -21,19 +21,6 @@ echo    Repository: https://github.com/maicotien552006-hash/H-QTCSDL.git
 echo =========================================================================
 echo.
 
-REM 0. Khoi tao Git neu chua co repository
-if not exist ".git" (
-    echo [THONG BAO] Khoi tao Git Repository moi...
-    %GIT_CMD% init -b main
-)
-
-REM Cau hinh User identity neu chua thiet lap
-%GIT_CMD% config user.name >nul 2>&1
-if %ERRORLEVEL% NEQ 0 (
-    %GIT_CMD% config user.name "maicotien552006-hash"
-    %GIT_CMD% config user.email "maicotien552006@users.noreply.github.com"
-)
-
 REM 1. Chuyen sang nhanh main
 %GIT_CMD% branch -M main
 
@@ -43,7 +30,7 @@ REM 2. Dam bao Remote Origin chinh xac
 
 REM 3. Stage va Commit toan bo ma nguon neu co thay doi moi
 %GIT_CMD% add -A
-%GIT_CMD% commit -m "feat: complete OISM data structure, schema optimization, 2-step transfer, spatial GIS, and comprehensive documentation"
+%GIT_CMD% commit -m "feat: complete OISM system with Docker Compose, GitHub Actions CI/CD, SQL Server 2022 and modern UI" >nul 2>&1
 
 echo.
 echo =========================================================================
